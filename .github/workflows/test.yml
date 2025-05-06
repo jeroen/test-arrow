@@ -1,0 +1,30 @@
+# Need help debugging build failures? Start at https://github.com/r-lib/actions#where-to-find-help
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+name: Test arrow
+
+jobs:
+  test-arrow:
+    runs-on: ${{ matrix.os }}
+    container:
+      image: runiverse/base:latest
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ 'ubuntu-24.04', 'ubuntu-24.04-arm' ]
+    steps:
+      - name: Install dependencies
+        run: install.packages(tools::package_dependencies('arrow')$arrow)
+        shell: Rscript {0}
+
+      - name: Install arrow
+        run: |
+          install.packages("arrow", repos = 'https://cran.r-project.org')
+          library(arrow)
+        shell: Rscript {0}
+        env:
+           NOT_CRAN: true
+#          ARROW_GCS: OFF
